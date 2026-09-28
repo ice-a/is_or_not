@@ -1,0 +1,45 @@
+<view wx:if="{{visible}}" class="mask" bindtap="onMask">
+  <view class="sheet" catchtap="noop">
+    <view class="handle"></view>
+
+    <view class="title">打赏支持我们 ☕</view>
+    <view class="sub">你的支持让「辨是非」一直免费帮长辈辨真假</view>
+
+    <view class="amounts">
+      <view
+        wx:for="{{presets}}"
+        wx:key="*this"
+        class="amt {{selected === item ? 'on' : ''}}"
+        bindtap="onPick"
+        data-v="{{item}}"
+      >¥{{item}}</view>
+    </view>
+
+    <view class="custom">
+      <text class="cny">¥</text>
+      <input
+        class="cin"
+        type="digit"
+        placeholder="自定义金额"
+        value="{{custom}}"
+        bindinput="onCustom"
+        maxlength="6"
+      />
+    </view>
+
+    <view class="msg">
+      <input
+        class="min"
+        placeholder="留句话给作者（选填）"
+        value="{{message}}"
+        bindinput="onMsg"
+        maxlength="50"
+      />
+    </view>
+
+    <button class="pay" disabled="{{!amount || paying}}" bindtap="onPay">
+      {{paying ? '处理中…' : (amount ? '打赏 ¥' + amount : '请选择金额')}}
+    </button>
+    <view class="pay-note muted">演示模式：点击即记录，不产生真实扣款</view>
+  </view>
+</view>

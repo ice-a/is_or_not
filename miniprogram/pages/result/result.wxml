@@ -16,7 +16,19 @@
       <button class="act" bindtap="onFeedback">👎 说错了</button>
       <button class="act" bindtap="onReadAloud">🔊 读给我听</button>
     </view>
+
+    <!-- 打赏 CTA：结论页底部，用户在获得价值后顺手支持 -->
+    <view class="tip-cta" bindtap="onTip">
+      <view class="tc-icon">☕</view>
+      <view class="tc-text">
+        <view class="tc-title">觉得有用？请我们喝杯奶茶</view>
+        <view class="tc-sub">你的打赏支撑「辨是非」持续免费</view>
+      </view>
+      <view class="tc-btn">打赏</view>
+    </view>
   </view>
+
+  <tip-sheet visible="{{tipVisible}}" bind:close="onTipClose" bind:success="onTipSuccess"></tip-sheet>
 
   <!-- 降级态：L3 自查清单（没查清 / 拉取失败 / 演示内容失效） -->
   <view wx:else class="checklist">

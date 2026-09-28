@@ -4,6 +4,7 @@ const app = getApp();
 Page({
   data: {
     elder: false,
+    tipVisible: false,
   },
 
   onShow() {
@@ -16,6 +17,18 @@ Page({
     app.setElderMode(on);
     this.setData({ elder: on });
     wx.showToast({ title: on ? '已开启长辈模式' : '已关闭长辈模式', icon: 'none' });
+  },
+
+  // ☕ 打赏入口
+  onTip() {
+    this.setData({ tipVisible: true });
+  },
+  onTipClose() {
+    this.setData({ tipVisible: false });
+  },
+  onTipSuccess(e) {
+    const amount = (e && e.detail && e.detail.amount) || 0;
+    console.log('[tip] success amount=', amount);
   },
 
   onAbout() {

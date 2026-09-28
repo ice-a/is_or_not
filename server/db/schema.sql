@@ -71,3 +71,14 @@ CREATE TABLE IF NOT EXISTS public.feedback (
   comment    TEXT,
   created_at BIGINT
 );
+
+-- 打赏 / 虚拟支付记录（金额以「分」存储，避免浮点误差）
+CREATE TABLE IF NOT EXISTS public.tips (
+  id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  uid        TEXT    NOT NULL DEFAULT '',
+  amount_cents INTEGER NOT NULL DEFAULT 0,
+  message    TEXT,
+  channel    TEXT    NOT NULL DEFAULT 'demo', -- demo=演示直录；virtualpay=微信虚拟支付
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_tips_uid_created ON public.tips (uid, created_at);

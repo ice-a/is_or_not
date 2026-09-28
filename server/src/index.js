@@ -9,6 +9,7 @@ const analyze = require('./routes/analyze');
 const getVerdict = require('./routes/getVerdict');
 const feedback = require('./routes/feedback');
 const history = require('./routes/history');
+const tip = require('./routes/tip');
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,7 @@ app.use('/api/analyze', analyze);
 app.use('/api/getVerdict', getVerdict);
 app.use('/api/feedback', feedback);
 app.use('/api/history', history);
+app.use('/api/tip', tip);
 
 // 404
 app.use((req, res) => res.status(404).json({ ok: false, code: 404, msg: 'not found' }));

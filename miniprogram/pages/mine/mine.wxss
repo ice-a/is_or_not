@@ -7,14 +7,36 @@
 .avatar {
   width: 120rpx; height: 120rpx;
   border-radius: 50%;
-  background: var(--c-primary);
+  background: linear-gradient(135deg, #2A86E0, var(--c-primary-deep));
   color: #fff;
   font-size: 56rpx; font-weight: 600;
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 20rpx;
+  box-shadow: 0 8rpx 18rpx rgba(26, 111, 196, 0.28);
 }
 .pname { font-size: var(--fs-title); font-weight: 600; }
 .pmeta { margin-top: 8rpx; }
+
+/* 打赏卡片 */
+.tip-card {
+  display: flex;
+  align-items: center;
+  margin: 8rpx 0 24rpx;
+  padding: 28rpx 30rpx;
+  background: linear-gradient(135deg, #FFF7E8, #FFEFD2);
+  border: 2rpx solid #F6DCA6;
+  border-radius: 20rpx;
+}
+.tc-left { flex: 1; min-width: 0; }
+.tc-title { font-size: 30rpx; font-weight: 600; color: #8a5a12; }
+.tc-sub { font-size: 24rpx; color: #b08a4a; margin-top: 8rpx; }
+.tc-btn {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #F4B740, #E8902B);
+  color: #fff; font-size: 28rpx; font-weight: 600;
+  padding: 16rpx 36rpx; border-radius: 999rpx;
+  box-shadow: 0 6rpx 16rpx rgba(232, 144, 43, 0.3);
+}
 
 .row { display: flex; align-items: center; }
 .row.between { justify-content: space-between; }

@@ -1,7 +1,9 @@
 <view class="container {{elder ? 'elder' : ''}}">
-  <view class="head">
-    <view class="title">把要查的内容贴进来</view>
-    <view class="sub">公众号、小红书、抖音、短信、网址、纯文字都行</view>
+  <!-- 首屏 hero -->
+  <view class="hero">
+    <view class="hero-icon">🔍</view>
+    <view class="hero-title">这条消息，是真的假的？</view>
+    <view class="hero-sub">把收到的话贴进来，马上告诉你真真假假、为什么、该怎么办</view>
   </view>
 
   <view class="card input-card">
@@ -15,6 +17,8 @@
       auto-height
     ></textarea>
 
+    <view class="counter {{text.length > 4500 ? 'warn' : ''}}">{{text.length}}/5000</view>
+
     <view class="row">
       <view class="chip" bindtap="onPaste">📋 粘贴</view>
       <view wx:if="{{text}}" class="chip ghost" bindtap="onClear">清空</view>
@@ -24,10 +28,12 @@
   </view>
 
   <view class="examples">
-    <view class="ex-title muted">不会弄？试试这样：</view>
-    <view class="ex" bindtap="onPick" data-t="群里说吃大蒜能治感冒，是真的吗？">「吃大蒜治感冒」</view>
-    <view class="ex" bindtap="onPick" data-t="【中国移动】您的积分即将过期，点击 aaa.com 兑换现金">「积分兑换短信」</view>
-    <view class="ex" bindtap="onPick" data-t="震惊！这家医院瞒报疫情，内部人员爆料…">「惊悚标题党」</view>
+    <view class="ex-title muted">不会弄？点下面的例子试试：</view>
+    <scroll-view class="ex-scroll" scroll-x="true" enable-flex="true">
+      <view class="ex" bindtap="onPick" data-t="群里说吃大蒜能治感冒，是真的吗？">🧄 吃大蒜治感冒</view>
+      <view class="ex" bindtap="onPick" data-t="【中国移动】您的积分即将过期，点击 aaa.com 兑换现金">💰 积分兑换短信</view>
+      <view class="ex" bindtap="onPick" data-t="震惊！这家医院瞒报疫情，内部人员爆料…">😱 惊悚标题党</view>
+    </scroll-view>
   </view>
 
   <button class="btn-primary submit" disabled="{{!text || submitting}}" bindtap="onSubmit">

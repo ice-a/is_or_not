@@ -31,9 +31,9 @@ const STAGE_TEXT = {
 
 // 结论徽标 -> 展示信息
 const VERDICT_META = {
-  false: { label: '这是假的，别信别转', color: '#D93025', emoji: '✕' },
-  true: { label: '基本可信', color: '#1E8E3E', emoji: '✓' },
-  unverified: { label: '还没查清，先别动手', color: '#B8860B', emoji: '?' },
+  false: { label: '这是假的，别信别转', color: '#E23B2E', emoji: '✕' },
+  true: { label: '基本可信', color: '#1E9E4A', emoji: '✓' },
+  unverified: { label: '还没查清，先别动手', color: '#C8920A', emoji: '?' },
 };
 
 function verdictMeta(v) {

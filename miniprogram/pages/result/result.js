@@ -19,6 +19,8 @@ Page({
     local: false,
     cached: false,
 
+    tipVisible: false,
+
     loading: true,
     showVerdict: false,
     showChecklist: false,
@@ -177,6 +179,19 @@ Page({
     wx.navigateBack({
       fail: () => wx.switchTab({ url: '/pages/home/home' }),
     });
+  },
+
+  // ☕ 打赏入口
+  onTip() {
+    this.setData({ tipVisible: true });
+  },
+  onTipClose() {
+    this.setData({ tipVisible: false });
+  },
+  onTipSuccess(e) {
+    // 成功回调：可在此做统计或提示，当前组件内已弹感谢窗
+    const amount = (e && e.detail && e.detail.amount) || 0;
+    console.log('[tip] success amount=', amount);
   },
 
   // 📤 发给家人：分享卡片

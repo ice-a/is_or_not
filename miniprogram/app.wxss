@@ -5,15 +5,19 @@ page {
   --fs-title: 22px;
   --fs-verdict: 34px;
   --tap-min: 56px;          /* 最小点击热区 */
-  --radius: 16rpx;
-  --c-danger: #D93025;      /* 假 */
-  --c-safe: #1E8E3E;        /* 真 */
-  --c-warn: #B8860B;        /* 说不准 */
-  --c-primary: #185FA5;
-  --c-text: #2C2C2A;
-  --c-sub: #888780;
-  --bg: #F7F6F3;
+  --radius: 20rpx;
+  --c-danger: #E23B2E;      /* 假 */
+  --c-safe: #1E9E4A;        /* 真 */
+  --c-warn: #C8920A;        /* 说不准 */
+  --c-primary: #1A6FC4;
+  --c-primary-deep: #12539A;
+  --c-gold: #E8902B;        /* 打赏暖色 */
+  --c-text: #26241F;
+  --c-sub: #8A857C;
+  --bg: #F4F6F8;
+  --bg-soft: #FFFFFF;
   --card: #ffffff;
+  --line: #EDEBE6;
 
   background: var(--bg);
   color: var(--c-text);
@@ -31,30 +35,34 @@ page.elder,
   line-height: 1.9;
 }
 
-view, text, button, textarea { box-sizing: border-box; }
+view, text, button, textarea, input { box-sizing: border-box; }
 
 .container { padding: 24rpx 28rpx; }
 
+/* 通用卡片 */
 .card {
   background: var(--card);
-  border-radius: 20rpx;
-  padding: 28rpx;
+  border-radius: var(--radius);
+  padding: 30rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+  box-shadow: 0 4rpx 18rpx rgba(28, 40, 60, 0.05);
+  border: 1rpx solid var(--line);
 }
 
+/* 主按钮 */
 .btn-primary {
-  background: var(--c-primary);
+  background: linear-gradient(135deg, #2A86E0, var(--c-primary-deep));
   color: #fff;
   border-radius: 999rpx;
   min-height: var(--tap-min);
   font-size: var(--fs-title);
-  font-weight: 500;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(26, 111, 196, 0.28);
 }
-.btn-primary[disabled] { background: #b9c6d6; }
+.btn-primary[disabled] { background: #b9c6d6; box-shadow: none; }
 .btn-primary::after { border: none; }
 
 .btn-ghost {
@@ -68,5 +76,14 @@ view, text, button, textarea { box-sizing: border-box; }
   align-items: center;
   justify-content: center;
 }
+.btn-ghost::after { border: none; }
 
 .muted { color: var(--c-sub); font-size: 24rpx; }
+
+/* 通用：柔和顶部渐变条，用于各页头图氛围 */
+.hero-grad {
+  background: linear-gradient(135deg, #E8F2FE, #F3F7FB);
+  border-radius: 24rpx;
+  padding: 32rpx 28rpx;
+  margin-bottom: 24rpx;
+}

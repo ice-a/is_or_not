@@ -5,6 +5,15 @@
     <view class="pmeta muted">帮您看清消息真假</view>
   </view>
 
+  <!-- 打赏卡片 -->
+  <view class="tip-card" bindtap="onTip">
+    <view class="tc-left">
+      <view class="tc-title">支持「辨是非」持续免费 ☕</view>
+      <view class="tc-sub">一杯奶茶钱，帮更多长辈远离骗局</view>
+    </view>
+    <view class="tc-btn">打赏</view>
+  </view>
+
   <view class="card">
     <view class="row between">
       <view class="label">长辈模式（大字）</view>
@@ -14,6 +23,9 @@
   </view>
 
   <view class="card menu">
+    <view class="mi" bindtap="onTip">
+      <text>👍 打赏支持我们</text><text class="arrow">›</text>
+    </view>
     <view class="mi" bindtap="onAbout">
       <text>关于辨是非</text><text class="arrow">›</text>
     </view>
@@ -25,4 +37,6 @@
   <view class="tip muted">
     本结论由人工智能生成，仅供参考。遇到要钱、要验证码、要你点链接的，先别动，打 96110 问一问。
   </view>
+
+  <tip-sheet visible="{{tipVisible}}" bind:close="onTipClose" bind:success="onTipSuccess"></tip-sheet>
 </view>

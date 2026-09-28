@@ -49,6 +49,28 @@
 }
 .act::after { border: none; }
 
+/* 打赏 CTA */
+.tip-cta {
+  display: flex;
+  align-items: center;
+  margin-top: 28rpx;
+  padding: 24rpx 28rpx;
+  background: linear-gradient(135deg, #FFF7E8, #FFEFD2);
+  border: 2rpx solid #F6DCA6;
+  border-radius: 20rpx;
+}
+.tc-icon { font-size: 52rpx; margin-right: 20rpx; }
+.tc-text { flex: 1; min-width: 0; }
+.tc-title { font-size: 30rpx; font-weight: 600; color: #8a5a12; }
+.tc-sub { font-size: 24rpx; color: #b08a4a; margin-top: 6rpx; }
+.tc-btn {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #F4B740, #E8902B);
+  color: #fff; font-size: 28rpx; font-weight: 600;
+  padding: 16rpx 36rpx; border-radius: 999rpx;
+  box-shadow: 0 6rpx 16rpx rgba(232, 144, 43, 0.3);
+}
+
 /* 降级态 / 自查清单 */
 .checklist { padding-top: 16rpx; }
 .badge.warn {

@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "结论",
   "usingComponents": {
-    "verdict-card": "/components/verdict-card/verdict-card"
+    "verdict-card": "/components/verdict-card/verdict-card",
+    "tip-sheet": "/components/tip-sheet/tip-sheet"
   }
 }
