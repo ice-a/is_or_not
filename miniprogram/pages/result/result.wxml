@@ -28,8 +28,6 @@
     </view>
   </view>
 
-  <tip-sheet visible="{{tipVisible}}" bind:close="onTipClose" bind:success="onTipSuccess"></tip-sheet>
-
   <!-- 降级态：L3 自查清单（没查清 / 拉取失败 / 演示内容失效） -->
   <view wx:else class="checklist">
     <view class="badge warn">先别急，咱们自己看</view>
@@ -38,5 +36,7 @@
     <view class="cl-tip">上面有 2 条以上说"是"，就先别信，打 96110 问一问。</view>
     <button class="btn-primary" bindtap="backHome">返回再查一条</button>
   </view>
+
+  <tip-sheet visible="{{tipVisible}}" bind:close="onTipClose" bind:success="onTipSuccess"></tip-sheet>
 
 </view>
