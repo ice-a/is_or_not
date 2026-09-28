@@ -1,26 +1,32 @@
 'use strict';
 
-// 任务编排：claim job → AI 定级 → verify(官方库) → simplify(老年化) → 写 verdicts
+// 任务编排：claim job → AI 定级 → verify(官方库) → 写 verdicts
 // 兼容两种运行环境：
 //   - 常驻容器（云托管 / CloudBase Run）：用 startWorker 的定时器扫描 pending；
 //   - 无服务器（Vercel）：无常驻进程，由 getVerdict 调 processJobById 惰性处理。
 const { pool } = require('./db');
 const { callAI } = require('./ai');
 const { ruleEngine, matchOfficial } = require('./rules');
-const { ANALYZE_SYS, SIMPLIFY_SYS } = require('./prompt');
+const { ANALYZE_SYS } = require('./prompt');
 const { AI } = require('./config');
 
+// 任务超过该时长仍处 running 视为超时残留（被 serverless 冷杀/进程崩溃），允许重新认领。
+// 既能恢复卡死的 job，又避免并发轮询重复认领同一条（见 processJobById）。
+const STALE_MS = 60000;
+
 // 原子认领一个待处理任务（多实例部署时用 FOR UPDATE SKIP LOCKED 避免重复处理）。
-// 兼容 'pending' 与 'running'（上次处理超时残留），防止任务卡死。
+// 认领条件：pending，或 running 但已超时（updated_at 早于 now-STALE_MS）。
 async function claimNextJob() {
   const now = Date.now();
   const { rows } = await pool.query(
     `UPDATE jobs SET status='running', stage=1, updated_at=$2
      WHERE id = (
-       SELECT id FROM jobs WHERE status IN ('pending','running') ORDER BY created_at ASC LIMIT 1 FOR UPDATE SKIP LOCKED
+       SELECT id FROM jobs
+       WHERE status='pending' OR (status='running' AND updated_at < $3)
+       ORDER BY created_at ASC LIMIT 1 FOR UPDATE SKIP LOCKED
      )
      RETURNING id, fingerprint, raw_text, uid`,
-    [now]
+    [now, now - STALE_MS]
   );
   return rows[0];
 }
@@ -75,6 +81,7 @@ async function degrade(job) {
 async function processJob(job) {
   const text = job.raw_text || '';
 
+  // 合并 prompt：一次调用同时完成判定 + 老年化改写（Vercel 单轮也能产出友好文案）
   let ai = await callAI(ANALYZE_SYS, text);
   if (!ai || !ai.verdict) {
     return degrade(job);
@@ -82,16 +89,11 @@ async function processJob(job) {
 
   const sources = matchOfficial(text);
   const matchedOfficial = sources.length > 0;
-  // 硬约束：判「假」必须附官方来源，否则降级为「说不准」
+  // 硬约束：判「假」必须附官方来源，否则降级为「说不准」。
+  // 降级时一并把 oneLine 改写为中性表述，避免"结论说不准、标题却写假消息"的自相矛盾。
   if (ai.verdict === 'false' && !matchedOfficial) {
     ai.verdict = 'unverified';
-  }
-
-  let final = ai;
-  // Vercel(serverless) 省掉二次改写调用以压低延迟、避免超过函数超时；常驻容器保留 SIMPLIFY
-  if (process.env.VERCEL !== '1') {
-    const simp = await callAI(SIMPLIFY_SYS, JSON.stringify(ai));
-    if (simp && simp.oneLine) final = simp;
+    ai.oneLine = '现在查不清，先别照着做';
   }
 
   return writeVerdict(job.id, job.fingerprint, {
@@ -99,9 +101,9 @@ async function processJob(job) {
     verdict: ai.verdict,
     channel: ai.channel || 'text',
     intent: ai.intent || '转述',
-    oneLine: final.oneLine || ai.oneLine,
-    reasons: final.reasons || ai.reasons || [],
-    actions: final.actions || ai.actions || [],
+    oneLine: ai.oneLine || '现在查不清，先别照着做',
+    reasons: ai.reasons || [],
+    actions: ai.actions || [],
     sources,
     riskPredicates: ai.riskPredicates || [],
     model: AI.MODEL,
@@ -110,13 +112,15 @@ async function processJob(job) {
 }
 
 // 原子认领并处理指定 job（serverless 下由 getVerdict 调用）。
-// 返回 { ok, verdictId, degraded } 或被其他实例认领/已完成时返回 null。
+// 认领条件同 claimNextJob：pending，或超时残留的 running。
+// 返回 { ok, verdictId, degraded } 或被其他实例认领/非待处理时返回 null（前端继续轮询）。
 async function processJobById(id) {
+  const now = Date.now();
   const { rows } = await pool.query(
     `UPDATE jobs SET status='running', stage=1, updated_at=$2
-     WHERE id=$1 AND status IN ('pending','running')
+     WHERE id=$1 AND (status='pending' OR (status='running' AND updated_at < $3))
      RETURNING id, fingerprint, raw_text, uid`,
-    [Number(id), Date.now()]
+    [Number(id), now, now - STALE_MS]
   );
   const job = rows[0];
   if (!job) return null;

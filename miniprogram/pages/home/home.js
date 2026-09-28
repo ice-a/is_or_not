@@ -1,5 +1,5 @@
 // miniprogram/pages/home/home.js
-const { submit, getVerdict } = require('../../services/analyze');
+const { submit } = require('../../services/analyze');
 const { pushLocal } = require('../../services/history');
 const { detectType, typeLabel } = require('../../utils/format');
 
@@ -51,17 +51,10 @@ Page({
     try {
       const res = await submit(this.data.text);
 
-      // 准备好完整 verdict：本地模式直接有；云缓存命中则再拉一次
+      // 准备好完整 verdict：本地模式 / 云缓存命中均已携带，无需二次拉取
       let verdict = null;
-      if (res.local) {
-        verdict = res.verdict;
-      } else if (res.cached) {
-        try {
-          const r = await getVerdict(res.verdictId);
-          verdict = r.verdict || null;
-        } catch (e) {
-          verdict = null;
-        }
+      if (res.local || res.cached) {
+        verdict = res.verdict || null;
       }
 
       const verdictId = res.verdictId || `job_${res.jobId}`;
