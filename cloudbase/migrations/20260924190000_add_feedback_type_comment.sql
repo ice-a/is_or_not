@@ -1,0 +1,2 @@
+ALTER TABLE public.feedback ADD COLUMN IF NOT EXISTS type TEXT;
+ALTER TABLE public.feedback ADD COLUMN IF NOT EXISTS comment TEXT;

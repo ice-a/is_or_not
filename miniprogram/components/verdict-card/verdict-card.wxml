@@ -1,0 +1,47 @@
+<view class="vc">
+  <!-- 结论徽标：一屏内可见，全屏最顶部 -->
+  <view class="badge" style="background:{{meta.color}}">
+    <text class="badge-emoji">{{meta.emoji}}</text>
+    <text class="badge-label">{{meta.label}}</text>
+  </view>
+
+  <!-- 一句话结论 -->
+  <view class="oneline">{{verdict.oneLine}}</view>
+
+  <!-- 为什么说（≤3 条） -->
+  <view class="block" wx:if="{{verdict.reasons.length}}">
+    <view class="block-title">为什么说</view>
+    <view class="reason" wx:for="{{verdict.reasons}}" wx:key="*this">
+      <text class="dot">•</text><text>{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 你该怎么办（≤2 条） -->
+  <view class="block" wx:if="{{verdict.actions.length}}">
+    <view class="block-title">你该怎么办</view>
+    <view class="action" wx:for="{{verdict.actions}}" wx:key="*this">
+      <text class="arrow">▸</text><text>{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 出处（可折叠，仅白名单域名可点） -->
+  <view class="block" wx:if="{{verdict.sources.length}}">
+    <view class="block-title" bindtap="toggleSources">
+      出处（{{verdict.sources.length}}）{{sourceOpen ? '▲' : '▼'}}
+    </view>
+    <view wx:if="{{sourceOpen}}" class="sources">
+      <view class="source" wx:for="{{verdict.sources}}" wx:key="url">
+        <text class="org">{{item.org}}</text>
+        <text class="src-title">{{item.title}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 降级提示 -->
+  <view class="degraded" wx:if="{{degraded}}">
+    ⚠️ 没能完全查证，仅供参考。建议把文字也复制进来，或打 96110 核实。
+  </view>
+
+  <!-- AI 生成标识（合规硬要求）：降级/本地路径如实标注为本地规则引擎，避免"人工智能"误导 -->
+  <view class="ai-tag">{{degraded ? '本结论由本地规则引擎生成，仅供参考' : '本结论由人工智能生成，仅供参考'}}</view>
+</view>

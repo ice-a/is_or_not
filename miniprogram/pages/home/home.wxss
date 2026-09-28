@@ -1,0 +1,32 @@
+.head { margin: 12rpx 0 24rpx; }
+.title { font-size: var(--fs-title); font-weight: 500; }
+.sub { color: var(--c-sub); font-size: 26rpx; margin-top: 8rpx; }
+
+.input-card { padding: 20rpx; }
+.input {
+  width: 100%;
+  min-height: 280rpx;
+  font-size: var(--fs-base);
+  line-height: 1.7;
+  padding: 8rpx;
+}
+.ph { color: #bbb; }
+
+.row { display: flex; align-items: center; margin-top: 16rpx; }
+.spacer { flex: 1; }
+.chip {
+  background: #E6F1FB; color: var(--c-primary);
+  border-radius: 999rpx; padding: 12rpx 28rpx; font-size: 28rpx; margin-right: 16rpx;
+}
+.chip.ghost { background: #f0f0ec; color: var(--c-sub); }
+.type-tag { color: var(--c-sub); font-size: 24rpx; }
+
+.examples { margin: 24rpx 0; }
+.ex-title { margin-bottom: 12rpx; }
+.ex {
+  background: #fff; border-radius: 14rpx; padding: 20rpx 24rpx; margin-bottom: 14rpx;
+  font-size: 28rpx; color: #444; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.03);
+}
+
+.submit { margin-top: 12rpx; width: 100%; }
+.tip { margin-top: 20rpx; line-height: 1.6; }

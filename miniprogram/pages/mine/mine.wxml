@@ -1,0 +1,28 @@
+<view class="container {{elder ? 'elder' : ''}}">
+  <view class="profile">
+    <view class="avatar">辨</view>
+    <view class="pname">辨是非</view>
+    <view class="pmeta muted">帮您看清消息真假</view>
+  </view>
+
+  <view class="card">
+    <view class="row between">
+      <view class="label">长辈模式（大字）</view>
+      <switch checked="{{elder}}" bindchange="toggleElder" color="#185FA5" />
+    </view>
+    <view class="hint muted">字更大、行更松，适合老花眼长辈使用。</view>
+  </view>
+
+  <view class="card menu">
+    <view class="mi" bindtap="onAbout">
+      <text>关于辨是非</text><text class="arrow">›</text>
+    </view>
+    <view class="mi" bindtap="onDisclaimer">
+      <text>免责声明</text><text class="arrow">›</text>
+    </view>
+  </view>
+
+  <view class="tip muted">
+    本结论由人工智能生成，仅供参考。遇到要钱、要验证码、要你点链接的，先别动，打 96110 问一问。
+  </view>
+</view>

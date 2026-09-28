@@ -1,0 +1,47 @@
+.vc { padding: 8rpx 0; }
+
+.badge {
+  border-radius: 20rpx;
+  padding: 40rpx 32rpx;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  margin-bottom: 28rpx;
+}
+.badge-emoji { font-size: 56rpx; margin-right: 20rpx; font-weight: 700; }
+.badge-label { font-size: var(--fs-verdict); font-weight: 600; line-height: 1.2; }
+
+.oneline {
+  font-size: var(--fs-title);
+  font-weight: 500;
+  line-height: 1.6;
+  margin-bottom: 28rpx;
+  color: var(--c-text);
+}
+
+.block { margin-bottom: 24rpx; }
+.block-title {
+  font-size: 30rpx; font-weight: 500; color: var(--c-primary);
+  margin-bottom: 12rpx;
+}
+.reason, .action {
+  display: flex; align-items: flex-start; font-size: var(--fs-base);
+  line-height: 1.7; margin-bottom: 10rpx;
+}
+.dot { color: var(--c-danger); margin-right: 12rpx; }
+.action .arrow { color: var(--c-safe); margin-right: 12rpx; }
+
+.sources { background: #f7f9fb; border-radius: 14rpx; padding: 16rpx; }
+.source { display: block; margin-bottom: 12rpx; }
+.source:last-child { margin-bottom: 0; }
+.org { color: var(--c-primary); font-size: 26rpx; font-weight: 500; margin-right: 10rpx; }
+.src-title { color: #555; font-size: 26rpx; }
+
+.degraded {
+  background: #fff7e6; border: 2rpx solid #f0c36d; color: #8a6d1a;
+  border-radius: 14rpx; padding: 18rpx; font-size: 26rpx; margin-bottom: 20rpx;
+}
+
+.ai-tag {
+  color: var(--c-sub); font-size: 22rpx; text-align: center; margin-top: 8rpx;
+}

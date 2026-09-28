@@ -1,0 +1,40 @@
+<view class="container {{elder ? 'elder' : ''}}">
+  <view class="head">
+    <view class="title">把要查的内容贴进来</view>
+    <view class="sub">公众号、小红书、抖音、短信、网址、纯文字都行</view>
+  </view>
+
+  <view class="card input-card">
+    <textarea
+      class="input"
+      placeholder="长按粘贴，或手动输入。例：群里说吃大蒜能治感冒，是真的吗？"
+      placeholder-class="ph"
+      value="{{text}}"
+      bindinput="onInput"
+      maxlength="5000"
+      auto-height
+    ></textarea>
+
+    <view class="row">
+      <view class="chip" bindtap="onPaste">📋 粘贴</view>
+      <view wx:if="{{text}}" class="chip ghost" bindtap="onClear">清空</view>
+      <view class="spacer"></view>
+      <view class="type-tag" wx:if="{{type}}">识别为：{{typeLabel}}</view>
+    </view>
+  </view>
+
+  <view class="examples">
+    <view class="ex-title muted">不会弄？试试这样：</view>
+    <view class="ex" bindtap="onPick" data-t="群里说吃大蒜能治感冒，是真的吗？">「吃大蒜治感冒」</view>
+    <view class="ex" bindtap="onPick" data-t="【中国移动】您的积分即将过期，点击 aaa.com 兑换现金">「积分兑换短信」</view>
+    <view class="ex" bindtap="onPick" data-t="震惊！这家医院瞒报疫情，内部人员爆料…">「惊悚标题党」</view>
+  </view>
+
+  <button class="btn-primary submit" disabled="{{!text || submitting}}" bindtap="onSubmit">
+    {{submitting ? '正在提交…' : '帮我看看'}}
+  </button>
+
+  <view class="tip muted">
+    本结论由人工智能生成，仅供参考，请以官方通报为准。涉及钱、验证码、链接，拿不准就打 96110。
+  </view>
+</view>

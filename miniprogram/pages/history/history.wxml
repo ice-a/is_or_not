@@ -1,0 +1,33 @@
+<view class="container {{elder ? 'elder' : ''}}">
+  <view class="head">
+    <view class="title">查过的记录</view>
+    <view class="tools">
+      <view class="chip {{onlyFake ? 'on' : ''}}" bindtap="toggleFake">只看假的</view>
+      <view class="chip ghost" bindtap="onClear" wx:if="{{list.length}}">清空</view>
+    </view>
+  </view>
+
+  <view wx:if="{{list.length}}" class="list">
+    <view
+      class="item"
+      wx:for="{{list}}"
+      wx:key="verdictId"
+      data-id="{{item.verdictId}}"
+      bindtap="onTap"
+      bindlongpress="onLong"
+    >
+      <view class="dot" style="background:{{item.meta.color}}"></view>
+      <view class="body">
+        <view class="line">{{item.oneLine || '分析中…'}}</view>
+        <view class="sub">{{item.preview}} · {{item.time}}</view>
+      </view>
+      <view class="tag" style="color:{{item.meta.color}}">{{item.short}}</view>
+    </view>
+  </view>
+
+  <view wx:else class="empty muted">
+    还没有查过的内容。去「查一查」贴一条试试。
+  </view>
+
+  <view class="tip muted">长按某条可删除；「清空」会删掉全部本地记录。</view>
+</view>

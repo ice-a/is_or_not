@@ -1,0 +1,23 @@
+# 依赖
+node_modules/
+server/node_modules/
+
+# 环境变量 / 密钥（绝不提交）
+.env
+.env.*
+!.env.example
+
+# 日志
+*.log
+npm-debug.log*
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 微信开发者工具私有配置（可能含私密信息）
+project.private.config.json
+
+# 编辑/调试
+.vscode/
+.idea/

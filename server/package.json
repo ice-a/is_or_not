@@ -1,0 +1,18 @@
+{
+  "name": "bianfeishi-server",
+  "version": "1.0.0",
+  "description": "辨是非小程序后端（云托管 Express 服务，PostgreSQL）",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  }
+}

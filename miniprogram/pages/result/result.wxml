@@ -1,0 +1,30 @@
+<view class="container {{elder ? 'elder' : ''}}">
+
+  <!-- 进度态：云模式实时 watch 任务进度，4 阶段拟人化文案 -->
+  <view wx:if="{{loading}}" class="progress">
+    <view class="spinner"></view>
+    <view class="stage-text">{{stageText || '正在帮您看…'}}</view>
+    <view class="muted stage-sub">不用等，马上就好</view>
+  </view>
+
+  <!-- 结果态：复用 verdict-card 组件 -->
+  <view wx:elif="{{showVerdict}}" class="result">
+    <verdict-card verdict="{{verdict}}" degraded="{{degraded}}"></verdict-card>
+
+    <view class="actions">
+      <button class="act" open-type="share">📤 发给家人</button>
+      <button class="act" bindtap="onFeedback">👎 说错了</button>
+      <button class="act" bindtap="onReadAloud">🔊 读给我听</button>
+    </view>
+  </view>
+
+  <!-- 降级态：L3 自查清单（没查清 / 拉取失败 / 演示内容失效） -->
+  <view wx:else class="checklist">
+    <view class="badge warn">先别急，咱们自己看</view>
+    <view class="oneline">{{degradedMsg || '没完全查清，按这几条自己判断：'}}</view>
+    <view class="cl-item" wx:for="{{checklist}}" wx:key="*this">{{item}}</view>
+    <view class="cl-tip">上面有 2 条以上说"是"，就先别信，打 96110 问一问。</view>
+    <button class="btn-primary" bindtap="backHome">返回再查一条</button>
+  </view>
+
+</view>

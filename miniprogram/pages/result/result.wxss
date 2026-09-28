@@ -1,0 +1,83 @@
+/* 进度态 */
+.progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+.spinner {
+  width: 72rpx;
+  height: 72rpx;
+  border: 8rpx solid #e3e8ee;
+  border-top-color: var(--c-primary);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin-bottom: 32rpx;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.stage-text {
+  font-size: var(--fs-title);
+  font-weight: 500;
+  color: var(--c-text);
+}
+.stage-sub {
+  margin-top: 12rpx;
+}
+
+/* 结果态 */
+.result { padding-top: 8rpx; }
+.actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 32rpx;
+}
+.act {
+  flex: 1;
+  background: #fff;
+  color: var(--c-primary);
+  border: 2rpx solid var(--c-primary);
+  border-radius: 16rpx;
+  min-height: var(--tap-min);
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.act::after { border: none; }
+
+/* 降级态 / 自查清单 */
+.checklist { padding-top: 16rpx; }
+.badge.warn {
+  background: var(--c-warn);
+  color: #fff;
+  border-radius: 20rpx;
+  padding: 36rpx 32rpx;
+  font-size: var(--fs-verdict);
+  font-weight: 600;
+  margin-bottom: 28rpx;
+}
+.oneline {
+  font-size: var(--fs-title);
+  font-weight: 500;
+  line-height: 1.6;
+  margin-bottom: 28rpx;
+}
+.cl-item {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 16rpx;
+  font-size: var(--fs-base);
+  line-height: 1.7;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.03);
+}
+.cl-tip {
+  color: var(--c-danger);
+  font-size: 28rpx;
+  margin: 24rpx 0 32rpx;
+  line-height: 1.7;
+}
