@@ -1,20 +1,23 @@
 'use strict';
 
-// 后台任务编排：claim pending job → AI 定级 → verify(官方库) → simplify(老年化) → 写 verdicts
-// 云托管是常驻容器，所以直接在本进程用定时器扫描 pending，比云函数定时器更稳、延迟更低。
+// 任务编排：claim job → AI 定级 → verify(官方库) → simplify(老年化) → 写 verdicts
+// 兼容两种运行环境：
+//   - 常驻容器（云托管 / CloudBase Run）：用 startWorker 的定时器扫描 pending；
+//   - 无服务器（Vercel）：无常驻进程，由 getVerdict 调 processJobById 惰性处理。
 const { pool } = require('./db');
 const { callAI } = require('./ai');
 const { ruleEngine, matchOfficial } = require('./rules');
 const { ANALYZE_SYS, SIMPLIFY_SYS } = require('./prompt');
 const { AI } = require('./config');
 
-// 原子认领一个 pending 任务（多实例部署时用 FOR UPDATE SKIP LOCKED 避免重复处理）
+// 原子认领一个待处理任务（多实例部署时用 FOR UPDATE SKIP LOCKED 避免重复处理）。
+// 兼容 'pending' 与 'running'（上次处理超时残留），防止任务卡死。
 async function claimNextJob() {
   const now = Date.now();
   const { rows } = await pool.query(
     `UPDATE jobs SET status='running', stage=1, updated_at=$2
      WHERE id = (
-       SELECT id FROM jobs WHERE status='pending' ORDER BY created_at ASC LIMIT 1 FOR UPDATE SKIP LOCKED
+       SELECT id FROM jobs WHERE status IN ('pending','running') ORDER BY created_at ASC LIMIT 1 FOR UPDATE SKIP LOCKED
      )
      RETURNING id, fingerprint, raw_text, uid`,
     [now]
@@ -84,8 +87,12 @@ async function processJob(job) {
     ai.verdict = 'unverified';
   }
 
-  const simp = await callAI(SIMPLIFY_SYS, JSON.stringify(ai));
-  const final = simp && simp.oneLine ? simp : ai;
+  let final = ai;
+  // Vercel(serverless) 省掉二次改写调用以压低延迟、避免超过函数超时；常驻容器保留 SIMPLIFY
+  if (process.env.VERCEL !== '1') {
+    const simp = await callAI(SIMPLIFY_SYS, JSON.stringify(ai));
+    if (simp && simp.oneLine) final = simp;
+  }
 
   return writeVerdict(job.id, job.fingerprint, {
     claim: ai.claim || text.slice(0, 20),
@@ -100,6 +107,28 @@ async function processJob(job) {
     model: AI.MODEL,
     degraded: false,
   });
+}
+
+// 原子认领并处理指定 job（serverless 下由 getVerdict 调用）。
+// 返回 { ok, verdictId, degraded } 或被其他实例认领/已完成时返回 null。
+async function processJobById(id) {
+  const { rows } = await pool.query(
+    `UPDATE jobs SET status='running', stage=1, updated_at=$2
+     WHERE id=$1 AND status IN ('pending','running')
+     RETURNING id, fingerprint, raw_text, uid`,
+    [Number(id), Date.now()]
+  );
+  const job = rows[0];
+  if (!job) return null;
+  try {
+    return await processJob(job);
+  } catch (e) {
+    console.error('[worker] processJobById err', e && e.message);
+    await pool
+      .query(`UPDATE jobs SET status='failed', updated_at=$1 WHERE id=$2`, [Date.now(), job.id])
+      .catch(() => {});
+    return null;
+  }
 }
 
 // 单次扫描：认领并尽力处理（最多 5 个，避免单次阻塞过久）
@@ -123,7 +152,7 @@ async function scanOnce() {
   return 1;
 }
 
-// 启动后台扫描定时器
+// 启动后台扫描定时器（仅常驻容器用；Vercel 下由 index.js 跳过）
 function startWorker(intervalMs) {
   if (process.env.DISABLE_WORKER === '1') {
     console.log('[worker] DISABLE_WORKER=1，跳过后台任务处理');
@@ -146,4 +175,4 @@ function startWorker(intervalMs) {
   console.log('[worker] started, interval', interval, 'ms');
 }
 
-module.exports = { startWorker, processJob, scanOnce };
+module.exports = { startWorker, processJob, processJobById, scanOnce };

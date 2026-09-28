@@ -13,13 +13,18 @@ function extractJSON(text) {
   return JSON.parse(s); // 解析失败由 callAI 的 try 捕获 → 返回 null 降级
 }
 
-// 调大模型（CloudBase AI 网关，OpenAI 兼容），返回解析后的 JSON 或 null（失败降级）
+// 调大模型（CloudBase AI 网关，OpenAI 兼容），返回解析后的 JSON 或 null（失败/超时降级）
 async function callAI(systemPrompt, userPrompt) {
   if (!AI.KEY) {
     console.warn('[callAI] 未配置 AI_KEY，走本地规则引擎降级');
     return null;
   }
   const url = `${AI.BASE_URL.replace(/\/+$/, '')}/chat/completions`;
+  // serverless（Vercel）下函数超时通常 10s，AI 调用必须设上限；
+  // 超时即 abort → 返回 null → 上层降级规则引擎，避免函数被吊死导致无限轮询。
+  const timeoutMs = parseInt(process.env.AI_TIMEOUT, 10) || (process.env.VERCEL === '1' ? 9000 : 25000);
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
     const r = await fetch(url, {
       method: 'POST',
@@ -35,6 +40,7 @@ async function callAI(systemPrompt, userPrompt) {
         ],
         temperature: 0.2,
       }),
+      signal: ctrl.signal,
     });
     if (!r.ok) {
       const txt = await r.text().catch(() => '');
@@ -49,8 +55,14 @@ async function callAI(systemPrompt, userPrompt) {
     }
     return extractJSON(content);
   } catch (e) {
-    console.error('[callAI] 异常', e && e.message);
+    if (e && e.name === 'AbortError') {
+      console.warn(`[callAI] 超时（>${timeoutMs}ms），降级规则引擎`);
+    } else {
+      console.error('[callAI] 异常', e && e.message);
+    }
     return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 

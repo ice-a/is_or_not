@@ -14,7 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
-// 健康检查（云托管探测 / 负载均衡用）
+// 健康检查（云托管探测 / 负载均衡 / Vercel 健康检查用）
 app.get('/healthz', (req, res) => res.json({ ok: true, ts: Date.now() }));
 
 // API 路由（与小程序 callFunction(name) 一一对应：/api/<name>）
@@ -32,10 +32,18 @@ app.use((err, req, res, next) => {
   res.status(500).json({ ok: false, code: 500, msg: '服务器开小差了' });
 });
 
-const PORT = parseInt(process.env.PORT, 10) || 80;
-app.listen(PORT, () => {
-  console.log('[server] listening on', PORT);
+// 常驻容器（云托管 / CloudBase Run）：启动后台扫描定时器；
+// Vercel(serverless) 无常驻进程，由 getVerdict 惰性处理任务，故跳过。
+if (process.env.VERCEL !== '1') {
   startWorker(WORKER_INTERVAL);
-});
+}
+
+// 仅在直接运行（node src/index.js）时监听端口；被 Vercel 的 api/index.js 引入时不监听。
+if (require.main === module) {
+  const PORT = parseInt(process.env.PORT, 10) || 80;
+  app.listen(PORT, () => {
+    console.log('[server] listening on', PORT);
+  });
+}
 
 module.exports = app;
